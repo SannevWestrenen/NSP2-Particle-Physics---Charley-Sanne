@@ -60,7 +60,7 @@ result2 = gauss2.fit(y_selection_2, pars2, x=x_selection_2)
 plt.figure(figsize=(10, 6))
 
 # Masked data (outside both peaks)
-plt.scatter(x_masked, y_masked, color="r", label="Masked data")
+plt.scatter(x_masked, y_masked, color="grey", label="Masked data")
 
 # Unmasked and fitted data for each peak
 plt.scatter(x_selection_1, y_selection_1, label="1st peak (data)")
