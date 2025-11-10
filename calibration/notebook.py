@@ -95,22 +95,3 @@ print(result1.fit_report())
 print("\n=== Gaussian Fit 2 (1822–2336 mV) ===")
 print(result2.fit_report())
 
-
-# # --- Plot ---
-# plt.figure()
-
-# # plot unmasked ranges (keep color blue)
-# plt.scatter(x_selection_1, y_selection_1, label='1st peak (x: 60–1240)')
-# plt.scatter(x_selection_2, y_selection_2, label='2nd peak (x: 1822–2336)')
-
-# # plot masked (red)
-# plt.scatter(x_masked, y_masked, color='r', label='Masked data (outside ranges)')
-
-# plt.xlabel("Voltage (mV)")
-# plt.ylabel("Counts")
-# plt.title("Unmasked data: 60–1240 mV and 1822–2336 mV")
-# plt.legend()
-# plt.show()
-
-# # --- Example model creation (for fitting later) ---
-# mod_linear = models.LinearModel()
