@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from lmfit import models
 
 # Importing Data
-
-# assign empty list for x value and y value
 x = []
 y = []
 
@@ -15,38 +14,91 @@ with open('20251105 Na-22 01.csv', 'r', newline='') as file:
     for line in file:
         # split column
         line_splitted = line.split(',')
-
-        # convert data to float and append
         x.append(float(line_splitted[0]))
         y.append(float(line_splitted[1]))
 
-# Masking everything but the highest peak
-
-# convert lists to numpy arrays
+# Convert lists to numpy arrays
 x_array = np.array(x)
 y_array = np.array(y)
 
-# define x range to mask
-x_min, x_max = 1822, 2336
+# Define the two unmasked x-ranges
+x_min1, x_max1 = 60, 1240
+x_min2, x_max2 = 1822, 2336
 
-# create mask
-mask = (x_array < x_min) | (x_array > x_max)
+# Create boolean masks for each unmasked range
+mask_range1 = (x_array >= x_min1) & (x_array <= x_max1)
+mask_range2 = (x_array >= x_min2) & (x_array <= x_max2)
 
-# masked and non-masked data
-x_masked = x_array[mask]
-y_masked = y_array[mask]
+# Combine both unmasked ranges
+unmasked_mask = mask_range1 | mask_range2
 
-x_selection = x_array[~mask]
-y_selection = y_array[~mask]
+# Masked = everything outside both ranges
+masked_mask = ~unmasked_mask
 
-# create new figure
-plt.figure()
+# Separate data for plotting/fitting
+x_selection_1 = x_array[mask_range1]
+y_selection_1 = y_array[mask_range1]
 
-# scatter plot
-plt.scatter(x_selection, y_selection)        # non-masked points (default color)
-plt.scatter(x_masked, y_masked, color='r')   # masked points (red)
+x_selection_2 = x_array[mask_range2]
+y_selection_2 = y_array[mask_range2]
+
+x_masked = x_array[masked_mask]
+y_masked = y_array[masked_mask]
+
+
+
+# --- Fit Gaussian to first range ---
+gauss1 = models.GaussianModel(prefix='g1_')
+pars1 = gauss1.guess(y_selection_1, x=x_selection_1)
+result1 = gauss1.fit(y_selection_1, pars1, x=x_selection_1)
+
+# --- Fit Gaussian to second range ---
+gauss2 = models.GaussianModel(prefix='g2_')
+pars2 = gauss2.guess(y_selection_2, x=x_selection_2)
+result2 = gauss2.fit(y_selection_2, pars2, x=x_selection_2)
+
+# --- Plot ---
+plt.figure(figsize=(10, 6))
+
+# masked data (outside both peaks)
+plt.scatter(x_masked, y_masked, color='r', label='Masked data')
+
+# unmasked and fitted data for each peak
+plt.scatter(x_selection_1, y_selection_1, label='1st peak (data)')
+plt.plot(x_selection_1, result1.best_fit, 'k--', label='1st peak (Gaussian fit)')
+
+plt.scatter(x_selection_2, y_selection_2, label='2nd peak (data)')
+plt.plot(x_selection_2, result2.best_fit, 'b--', label='2nd peak (Gaussian fit)')
 
 plt.xlabel("Voltage (mV)")
 plt.ylabel("Counts")
-plt.title("Masked data between 1822 and 2336")
+plt.title("Gaussian Fits for Peaks at 60–1240 mV and 1822–2336 mV")
+plt.legend()
 plt.show()
+
+# --- Print fit reports ---
+print("\n=== Gaussian Fit 1 (60–1240 mV) ===")
+print(result1.fit_report())
+
+print("\n=== Gaussian Fit 2 (1822–2336 mV) ===")
+print(result2.fit_report())
+
+
+# # --- Plot ---
+# plt.figure()
+
+# # plot unmasked ranges (keep color blue)
+# plt.scatter(x_selection_1, y_selection_1, label='1st peak (x: 60–1240)')
+# plt.scatter(x_selection_2, y_selection_2, label='2nd peak (x: 1822–2336)')
+
+# # plot masked (red)
+# plt.scatter(x_masked, y_masked, color='r', label='Masked data (outside ranges)')
+
+# plt.xlabel("Voltage (mV)")
+# plt.ylabel("Counts")
+# plt.title("Unmasked data: 60–1240 mV and 1822–2336 mV")
+# plt.legend()
+# plt.show()
+
+# # --- Example model creation (for fitting later) ---
+# mod_linear = models.LinearModel()
