@@ -1,3 +1,7 @@
+import matplotlib.pyplot as plt
+
+# Importing Data
+
 # assign empty list for x value and y value
 x = []
 y = []
@@ -19,3 +23,13 @@ with open('20251105 Na-22 01.csv', 'r', newline='') as file:
         y.append(float(line_splitted[1]))
 
 print(x, y)
+
+
+# Creating Plot
+
+# create new figure
+plt.figure()
+
+# create scatter plot
+plt.scatter(x, y)
+plt.show()
