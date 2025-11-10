@@ -51,6 +51,10 @@ gauss1 = models.GaussianModel(prefix="g1_")
 pars1 = gauss1.guess(y_selection_1, x=x_selection_1)
 result1 = gauss1.fit(y_selection_1, pars1, x=x_selection_1)
 
+print(x_selection_1)
+print(y_selection_1)
+print(max(y_selection_1))
+
 # Fit Gaussian to second range
 gauss2 = models.GaussianModel(prefix="g2_")
 pars2 = gauss2.guess(y_selection_2, x=x_selection_2)
