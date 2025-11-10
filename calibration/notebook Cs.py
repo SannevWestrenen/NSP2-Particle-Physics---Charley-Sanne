@@ -2,9 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from lmfit import models
 
-
-
 # %% Opening File
+# Na-22 notebook
 
 # Importing Data
 x = []
@@ -56,7 +55,7 @@ y_masked = y_array[masked_mask]
 # %% Fit to Gaussian funtion
 
 # --- Fit Gaussian to first range ---
-gauss1 = models.GaussianModel(prefix='g1_')
+gauss1 = models.GaussianModel(prefix="g1_")
 pars1 = gauss1.guess(y_selection_1, x=x_selection_1)
 result1 = gauss1.fit(y_selection_1, pars1, x=x_selection_1)
 
@@ -88,6 +87,7 @@ plt.xlabel("Voltage (mV)")
 plt.ylabel("Counts")
 plt.title("Gaussian Fits for Peaks at 60–1240 mV and 1822–2336 mV")
 plt.legend()
+plt.savefig("FittedData.png")
 plt.show()
 
 
@@ -99,3 +99,5 @@ print(result1.fit_report())
 print("\n=== Gaussian Fit 2 (1822–2336 mV) ===")
 print(result2.fit_report())
 
+
+# %%
